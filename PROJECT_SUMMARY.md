@@ -79,9 +79,9 @@
 ### 3. **Leave Management**
 - ✅ Leave model with approval workflow
 - ✅ Leave balance tracking
-- ⏳ Leave controller and views
-- ⏳ Leave request forms
-- ⏳ Leave approval interface
+- ✅ Leave controller and views
+- ✅ Leave request forms
+- ✅ Leave approval interface
 
 ## ⏳ Remaining Components to Implement
 
@@ -99,10 +99,10 @@
 - [ ] Attendance reports
 
 ### 3. **Leave Management**
-- [ ] Leave controller
-- [ ] Leave request form
-- [ ] Leave approval interface
-- [ ] Leave calendar view
+- [x] Leave controller
+- [x] Leave request form
+- [x] Leave approval interface
+- [x] Leave calendar view
 - [ ] Leave reports
 
 ### 4. **Salary Management**
@@ -192,9 +192,9 @@ To complete the HRMS system, implement the remaining controllers and views in th
 - **Database**: 100% Complete
 - **Authentication**: 100% Complete
 - **Dashboard**: 100% Complete
-- **Models**: 95% Complete
-- **Controllers**: 60% Complete
-- **Views**: 70% Complete
-- **Overall Progress**: ~85% Complete
+- **Models**: 100% Complete
+- **Controllers**: 80% Complete
+- **Views**: 85% Complete
+- **Overall Progress**: ~90% Complete
 
 The foundation is solid and ready for the remaining modules to be built upon it.
