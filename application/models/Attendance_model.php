@@ -169,4 +169,57 @@ class Attendance_model extends CI_Model {
                         ->get($this->table)
                         ->row();
     }
+    
+    public function get_employee_stats($employee_id) {
+        $current_month = date('m');
+        $current_year = date('Y');
+        
+        // Present days this month
+        $present = $this->db->where('employee_id', $employee_id)
+                           ->where('MONTH(date)', $current_month)
+                           ->where('YEAR(date)', $current_year)
+                           ->where('in_time IS NOT NULL')
+                           ->count_all_results($this->table);
+        
+        // Late days this month
+        $late = $this->db->where('employee_id', $employee_id)
+                        ->where('MONTH(date)', $current_month)
+                        ->where('YEAR(date)', $current_year)
+                        ->where('is_late', 1)
+                        ->count_all_results($this->table);
+        
+        // Absent days this month (working days - present days)
+        $working_days = $this->get_working_days_in_month($current_month, $current_year);
+        $absent = $working_days - $present;
+        
+        return array(
+            'present_this_month' => $present,
+            'late_this_month' => $late,
+            'absent_this_month' => max(0, $absent)
+        );
+    }
+    
+    public function get_employee_attendance_history($employee_id, $limit = 10) {
+        return $this->db->where('employee_id', $employee_id)
+                       ->order_by('date', 'DESC')
+                       ->limit($limit)
+                       ->get($this->table)
+                       ->result();
+    }
+    
+    private function get_working_days_in_month($month, $year) {
+        $days_in_month = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        $working_days = 0;
+        
+        for ($day = 1; $day <= $days_in_month; $day++) {
+            $date = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
+            $day_of_week = date('N', strtotime($date)); // 1 (Monday) to 7 (Sunday)
+            
+            if ($day_of_week <= 5) { // Monday to Friday
+                $working_days++;
+            }
+        }
+        
+        return $working_days;
+    }
 }

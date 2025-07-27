@@ -137,4 +137,44 @@ class Leave_model extends CI_Model {
                         ->get($this->table)
                         ->row();
     }
+    
+    public function get_employee_stats($employee_id) {
+        // Get leave counts by status
+        $approved = $this->db->where('employee_id', $employee_id)
+                            ->where('status', 'approved')
+                            ->count_all_results($this->table);
+        
+        $pending = $this->db->where('employee_id', $employee_id)
+                           ->where('status', 'pending')
+                           ->count_all_results($this->table);
+        
+        $rejected = $this->db->where('employee_id', $employee_id)
+                            ->where('status', 'rejected')
+                            ->count_all_results($this->table);
+        
+        // Get leave balance for different types
+        $sick_balance = $this->get_leave_balance($employee_id, 1); // Assuming 1 is sick leave type ID
+        $casual_balance = $this->get_leave_balance($employee_id, 2); // Assuming 2 is casual leave type ID
+        $annual_balance = $this->get_leave_balance($employee_id, 3); // Assuming 3 is annual leave type ID
+        
+        return array(
+            'approved_leaves' => $approved,
+            'pending_leaves' => $pending,
+            'rejected_leaves' => $rejected,
+            'sick_balance' => $sick_balance['remaining'],
+            'casual_balance' => $casual_balance['remaining'],
+            'annual_balance' => $annual_balance['remaining']
+        );
+    }
+    
+    public function get_employee_leaves($employee_id, $limit = 10) {
+        return $this->db->select('l.*, lt.name as leave_type_name')
+                        ->from($this->table . ' l')
+                        ->join('leave_types lt', 'lt.id = l.leave_type_id')
+                        ->where('l.employee_id', $employee_id)
+                        ->order_by('l.created_at', 'DESC')
+                        ->limit($limit)
+                        ->get()
+                        ->result();
+    }
 }

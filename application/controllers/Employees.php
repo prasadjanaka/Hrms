@@ -212,6 +212,16 @@ class Employees extends MY_Controller {
         }
         
         $data['employee'] = $employee;
+        
+        // Get attendance statistics
+        $data['attendance_stats'] = $this->Attendance_model->get_employee_stats($id);
+        $data['today_attendance'] = $this->Attendance_model->get_employee_attendance($id, date('Y-m-d'));
+        $data['recent_attendance'] = $this->Attendance_model->get_employee_attendance_history($id, 10);
+        
+        // Get leave statistics
+        $data['leave_stats'] = $this->Leave_model->get_employee_stats($id);
+        $data['recent_leaves'] = $this->Leave_model->get_employee_leaves($id, 10);
+        
         $this->render('employees/view', $data);
     }
     
